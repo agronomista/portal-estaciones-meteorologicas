@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portal de acceso a estaciones meteorológicas para estudiantes." />
+  <title>Estaciones meteorológicas | TaxNature</title>
+
+  <style>
+    :root {
+      --white: #ffffff;
+      --yellow: #ffe06a;
+      --cyan: #00c0f3;
+      --blue: #005da4;
+      --green: #6dc067;
+      --text: #15324a;
+      --muted: #5f7486;
+      --border: rgba(0, 93, 164, 0.14);
+      --shadow: 0 18px 48px rgba(0, 93, 164, 0.13);
+      --shadow-hover: 0 24px 60px rgba(0, 93, 164, 0.22);
+      --radius: 26px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(0, 192, 243, 0.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(109, 192, 103, 0.16), transparent 28%),
+        linear-gradient(180deg, #ffffff 0%, #f3fbff 100%);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 30px));
+      margin: 0 auto;
+      padding: 28px 0 34px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 34px;
+      border-radius: 32px;
+      color: #ffffff;
+      background:
+        linear-gradient(135deg, rgba(0, 93, 164, 0.98), rgba(0, 192, 243, 0.92) 58%, rgba(109, 192, 103, 0.9));
+      box-shadow: 0 22px 64px rgba(0, 93, 164, 0.24);
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .hero::before {
+      width: 220px;
+      height: 220px;
+      right: -70px;
+      bottom: -100px;
+    }
+
+    .hero::after {
+      width: 130px;
+      height: 130px;
+      left: -45px;
+      top: -45px;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 7px 11px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.13);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(32px, 6vw, 54px);
+      line-height: 1.04;
+      letter-spacing: -1.8px;
+    }
+
+    .hero p {
+      max-width: 700px;
+      margin: 17px 0 0;
+      font-size: clamp(15px, 2.2vw, 18px);
+      line-height: 1.65;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .section-heading {
+      margin: 34px 0 17px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: var(--blue);
+      font-size: clamp(23px, 4vw, 31px);
+    }
+
+    .section-heading p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .station-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .station-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 330px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      transform: translateY(0);
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .station-card:hover,
+    .station-card:focus-visible {
+      transform: translateY(-6px);
+      border-color: rgba(0, 192, 243, 0.5);
+      box-shadow: var(--shadow-hover);
+      outline: none;
+    }
+
+    .card-accent {
+      height: 9px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan), var(--green));
+    }
+
+    .card-body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      padding: 23px;
+    }
+
+    .icon-wrap {
+      display: grid;
+      width: 58px;
+      height: 58px;
+      place-items: center;
+      margin-bottom: 18px;
+      border-radius: 19px;
+      background: linear-gradient(135deg, rgba(0, 192, 243, 0.18), rgba(109, 192, 103, 0.18));
+      font-size: 29px;
+    }
+
+    .station-tag {
+      display: inline-flex;
+      width: fit-content;
+      margin-bottom: 9px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: var(--blue);
+      background: rgba(0, 192, 243, 0.1);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .station-card h3 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.16;
+      color: #102f49;
+    }
+
+    .station-card p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      line-height: 1.58;
+    }
+
+    .open-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 22px;
+      color: var(--blue);
+      font-weight: 900;
+    }
+
+    .arrow {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border-radius: 50%;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      transition: transform 0.2s ease;
+    }
+
+    .station-card:hover .arrow,
+    .station-card:focus-visible .arrow {
+      transform: translateX(4px);
+    }
+
+    .help-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-top: 25px;
+      padding: 17px 19px;
+      border: 1px solid rgba(255, 224, 106, 0.55);
+      border-radius: 18px;
+      background: rgba(255, 224, 106, 0.18);
+      color: #5d5529;
+      line-height: 1.55;
+    }
+
+    .help-box strong {
+      color: #4c451c;
+    }
+
+    footer {
+      margin-top: 28px;
+      padding: 18px 4px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .station-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .station-card {
+        min-height: 0;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        width: min(100% - 20px, 1120px);
+        padding-top: 10px;
+      }
+
+      .hero {
+        padding: 25px 21px;
+        border-radius: 25px;
+      }
+
+      .hero h1 {
+        letter-spacing: -1px;
+      }
+
+      .card-body {
+        padding: 20px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">🌦️ Plataforma de monitoreo ambiental</div>
+        <h1>Estaciones meteorológicas</h1>
+        <p>
+          Seleccione una estación para consultar sus datos, explorar las variables
+          disponibles y analizar el comportamiento meteorológico registrado.
+        </p>
+      </div>
+    </header>
+
+    <section aria-labelledby="station-title">
+      <div class="section-heading">
+        <h2 id="station-title">Seleccione una estación</h2>
+        <p>Cada opción abrirá el panel correspondiente en una pestaña nueva.</p>
+      </div>
+
+      <div class="station-grid">
+        <a
+          class="station-card"
+          href="https://taxnature.shinyapps.io/station_met_davis/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Abrir estación meteorológica Davis"
+        >
+          <div class="card-accent"></div>
+          <div class="card-body">
+            <div class="icon-wrap">🌬️</div>
+            <div class="station-tag">Estación 1</div>
+            <h3>Estación meteorológica Davis</h3>
+            <p>
+              Consulte viento, radiación, evapotranspiración, temperatura,
+              humedad y precipitación.
+            </p>
+            <div class="open-link">
+              <span>Abrir estación</span>
+              <span class="arrow" aria-hidden="true">→</span>
+            </div>
+          </div>
+        </a>
+
+        <a
+          class="station-card"
+          href="https://taxnature.shinyapps.io/station_met_malezas/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Abrir estación meteorológica de malezas"
+        >
+          <div class="card-accent"></div>
+          <div class="card-body">
+            <div class="icon-wrap">🌱</div>
+            <div class="station-tag">Estación 2</div>
+            <h3>Estación meteorológica de malezas</h3>
+            <p>
+              Explore las lecturas de los nodos de campo, incluyendo temperatura,
+              humedad relativa y lluvia.
+            </p>
+            <div class="open-link">
+              <span>Abrir estación</span>
+              <span class="arrow" aria-hidden="true">→</span>
+            </div>
+          </div>
+        </a>
+
+        <a
+          class="station-card"
+          href="https://taxnature.shinyapps.io/station_FBM/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Abrir estación meteorológica IMN FBM"
+        >
+          <div class="card-accent"></div>
+          <div class="card-body">
+            <div class="icon-wrap">☀️</div>
+            <div class="station-tag">Estación 3</div>
+            <h3>Estación meteorológica IMN–FBM</h3>
+            <p>
+              Consulte temperatura, precipitación, radiación solar, radiación PAR
+              y presión atmosférica.
+            </p>
+            <div class="open-link">
+              <span>Abrir estación</span>
+              <span class="arrow" aria-hidden="true">→</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="help-box">
+        <span aria-hidden="true">💡</span>
+        <div>
+          <strong>Para estudiantes:</strong> compare las variables disponibles,
+          los sensores instalados y la resolución temporal de cada estación.
+          Seleccione la fuente que mejor se ajuste al objetivo de su análisis.
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      TaxNature · Plataforma educativa de observación meteorológica
+    </footer>
+  </main>
+</body>
+</html>
