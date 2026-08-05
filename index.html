@@ -285,6 +285,18 @@
       min-width: 0;
     }
 
+    .author-photo-link {
+      display: inline-flex;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      text-decoration: none;
+    }
+
+    .author-photo-link:focus-visible {
+      outline: 3px solid rgba(0, 192, 243, 0.45);
+      outline-offset: 3px;
+    }
+
     .author-photo {
       width: 48px;
       height: 48px;
@@ -475,15 +487,23 @@
     <footer>
       <p class="footer-note">TaxNature · Plataforma educativa de observación meteorológica</p>
       <div class="author-contact" aria-label="Contacto del responsable del portal">
-        <img
-          class="author-photo"
-          src="assets/antonio-rodriguez-cortes.png"
-          alt="Ing. Antonio Rodríguez Cortés"
-          width="48"
-          height="48"
-          loading="lazy"
-          decoding="async"
-        />
+        <a
+          class="author-photo-link"
+          href="https://www.linkedin.com/in/antonio-rodríguez-cortés-cr/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Abrir perfil de LinkedIn de Ing. Antonio Rodríguez Cortés"
+        >
+          <img
+            class="author-photo"
+            src="assets/antonio-rodriguez-cortes.png"
+            alt="Ing. Antonio Rodríguez Cortés"
+            width="48"
+            height="48"
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
         <div class="author-details">
           <span class="author-name">Ing. Antonio Rodríguez Cortés</span>
           <a class="author-email" href="mailto:jose.rodriguezcortes@ucr.ac.cr">
