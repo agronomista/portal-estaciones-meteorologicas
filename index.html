@@ -262,12 +262,64 @@
     }
 
     footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
       margin-top: 28px;
       padding: 18px 4px 0;
       border-top: 1px solid var(--border);
       color: var(--muted);
       font-size: 13px;
-      text-align: center;
+      text-align: left;
+    }
+
+    .footer-note {
+      margin: 0;
+    }
+
+    .author-contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .author-photo {
+      width: 48px;
+      height: 48px;
+      flex: 0 0 48px;
+      border: 2px solid rgba(0, 93, 164, 0.16);
+      border-radius: 50%;
+      background: #eaf7fc;
+      box-shadow: 0 5px 14px rgba(0, 93, 164, 0.12);
+      object-fit: cover;
+      object-position: 50% 24%;
+    }
+
+    .author-details {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+      line-height: 1.3;
+    }
+
+    .author-name {
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .author-email {
+      color: var(--blue);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+      text-decoration: none;
+    }
+
+    .author-email:hover,
+    .author-email:focus-visible {
+      text-decoration: underline;
     }
 
     @media (max-width: 900px) {
@@ -297,6 +349,15 @@
 
       .card-body {
         padding: 20px;
+      }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .author-contact {
+        justify-content: center;
       }
     }
 
@@ -412,7 +473,24 @@
     </section>
 
     <footer>
-      TaxNature · Plataforma educativa de observación meteorológica
+      <p class="footer-note">TaxNature · Plataforma educativa de observación meteorológica</p>
+      <div class="author-contact" aria-label="Contacto del responsable del portal">
+        <img
+          class="author-photo"
+          src="assets/antonio-rodriguez-cortes.png"
+          alt="Ing. Antonio Rodríguez Cortés"
+          width="48"
+          height="48"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="author-details">
+          <span class="author-name">Ing. Antonio Rodríguez Cortés</span>
+          <a class="author-email" href="mailto:jose.rodriguezcortes@ucr.ac.cr">
+            jose.rodriguezcortes@ucr.ac.cr
+          </a>
+        </div>
+      </div>
     </footer>
   </main>
 </body>
