@@ -167,10 +167,11 @@
     }
 
     .station-card:hover,
-    .station-card:focus-within {
+    .station-card:focus-visible {
       transform: translateY(-6px);
       border-color: rgba(0, 192, 243, 0.5);
       box-shadow: var(--shadow-hover);
+      outline: none;
     }
 
     .card-accent {
@@ -223,73 +224,15 @@
       line-height: 1.58;
     }
 
-    .station-map {
-      height: 180px;
-      margin-top: 18px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: 17px;
-      background: #eaf7fc;
-      z-index: 0;
-    }
-
-    .station-map .leaflet-control-attribution {
-      font-size: 8px;
-    }
-
-    .station-coordinates {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      margin-top: 13px;
-      color: var(--text);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .station-coordinates small {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .card-actions {
-      display: grid;
-      gap: 9px;
-      margin-top: auto;
-      padding-top: 19px;
-    }
-
     .open-link {
       display: inline-flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      margin-top: auto;
+      padding-top: 22px;
       color: var(--blue);
       font-weight: 900;
-      text-decoration: none;
-    }
-
-    .map-link {
-      display: inline-flex;
-      align-items: center;
-      width: fit-content;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 800;
-      text-decoration: none;
-    }
-
-    .open-link:focus-visible,
-    .map-link:focus-visible {
-      border-radius: 8px;
-      outline: 3px solid rgba(0, 192, 243, 0.35);
-      outline-offset: 3px;
-    }
-
-    .map-link:hover,
-    .map-link:focus-visible {
-      color: var(--blue);
-      text-decoration: underline;
     }
 
     .arrow {
@@ -303,8 +246,8 @@
       transition: transform 0.2s ease;
     }
 
-    .open-link:hover .arrow,
-    .open-link:focus-visible .arrow {
+    .station-card:hover .arrow,
+    .station-card:focus-visible .arrow {
       transform: translateX(4px);
     }
 
@@ -480,10 +423,6 @@
         padding: 20px;
       }
 
-      .station-map {
-        height: 210px;
-      }
-
       .location-overview {
         padding: 18px;
       }
@@ -533,7 +472,13 @@
       </div>
 
       <div class="station-grid">
-        <article class="station-card">
+        <a
+          class="station-card"
+          href="https://taxnature.shinyapps.io/station_met_davis/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Abrir estación meteorológica Davis"
+        >
           <div class="card-accent"></div>
           <div class="card-body">
             <div class="icon-wrap">🌬️</div>
@@ -543,43 +488,20 @@
               Consulte viento, radiación, evapotranspiración, temperatura,
               humedad y precipitación.
             </p>
-            <div
-              class="station-map"
-              id="map-davis"
-              role="img"
-              aria-label="Mapa de la ubicación de la estación meteorológica Davis"
-            ></div>
-            <div class="station-coordinates">
-              <span aria-hidden="true">📍</span>
-              <span>
-                10°00'20.03"N, 84°15'58.42"W<br />
-                <small>10.0055639, -84.2662278</small>
-              </span>
-            </div>
-            <div class="card-actions">
-              <a
-                class="open-link"
-                href="https://taxnature.shinyapps.io/station_met_davis/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Abrir estación meteorológica Davis"
-              >
-                <span>Abrir estación</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </a>
-              <a
-                class="map-link"
-                href="https://www.google.com/maps?q=10.0055639,-84.2662278"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Ver ubicación en Google Maps ↗
-              </a>
+            <div class="open-link">
+              <span>Abrir estación</span>
+              <span class="arrow" aria-hidden="true">→</span>
             </div>
           </div>
-        </article>
+        </a>
 
-        <article class="station-card">
+        <a
+          class="station-card"
+          href="https://taxnature.shinyapps.io/station_met_malezas/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Abrir estación meteorológica de malezas"
+        >
           <div class="card-accent"></div>
           <div class="card-body">
             <div class="icon-wrap">🌱</div>
@@ -589,43 +511,20 @@
               Explore las lecturas de los nodos de campo, incluyendo temperatura,
               humedad relativa y lluvia.
             </p>
-            <div
-              class="station-map"
-              id="map-malezas"
-              role="img"
-              aria-label="Mapa de la ubicación de la estación meteorológica de malezas"
-            ></div>
-            <div class="station-coordinates">
-              <span aria-hidden="true">📍</span>
-              <span>
-                10°00'23.25"N, 84°15'54.77"W<br />
-                <small>10.0064583, -84.2652139</small>
-              </span>
-            </div>
-            <div class="card-actions">
-              <a
-                class="open-link"
-                href="https://taxnature.shinyapps.io/station_met_malezas/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Abrir estación meteorológica de malezas"
-              >
-                <span>Abrir estación</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </a>
-              <a
-                class="map-link"
-                href="https://www.google.com/maps?q=10.0064583,-84.2652139"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Ver ubicación en Google Maps ↗
-              </a>
+            <div class="open-link">
+              <span>Abrir estación</span>
+              <span class="arrow" aria-hidden="true">→</span>
             </div>
           </div>
-        </article>
+        </a>
 
-        <article class="station-card">
+        <a
+          class="station-card"
+          href="https://taxnature.shinyapps.io/station_FBM/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Abrir estación meteorológica IMN FBM"
+        >
           <div class="card-accent"></div>
           <div class="card-body">
             <div class="icon-wrap">☀️</div>
@@ -635,41 +534,12 @@
               Consulte temperatura, precipitación, radiación solar, radiación PAR
               y presión atmosférica.
             </p>
-            <div
-              class="station-map"
-              id="map-fbm"
-              role="img"
-              aria-label="Mapa de la ubicación de la estación meteorológica IMN Fabio Baudrit Moreno"
-            ></div>
-            <div class="station-coordinates">
-              <span aria-hidden="true">📍</span>
-              <span>
-                10°00'23.06"N, 84°15'54.50"W<br />
-                <small>10.0064056, -84.2651389</small>
-              </span>
-            </div>
-            <div class="card-actions">
-              <a
-                class="open-link"
-                href="https://taxnature.shinyapps.io/station_FBM/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Abrir estación meteorológica IMN FBM"
-              >
-                <span>Abrir estación</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </a>
-              <a
-                class="map-link"
-                href="https://www.google.com/maps?q=10.0064056,-84.2651389"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Ver ubicación en Google Maps ↗
-              </a>
+            <div class="open-link">
+              <span>Abrir estación</span>
+              <span class="arrow" aria-hidden="true">→</span>
             </div>
           </div>
-        </article>
+        </a>
       </div>
 
       <section class="location-overview" aria-labelledby="location-title">
@@ -777,6 +647,9 @@
     };
 
     function addMarker(map, station, openPopup = false) {
+      const mapsUrl =
+        `https://www.google.com/maps?q=${station.lat},${station.lng}`;
+
       const marker = L.circleMarker([station.lat, station.lng], {
         radius: 9,
         color: "#ffffff",
@@ -786,7 +659,10 @@
       })
         .addTo(map)
         .bindPopup(
-          `<strong>${station.name}</strong><br>${station.lat.toFixed(7)}, ${station.lng.toFixed(7)}`
+          `<strong>${station.name}</strong><br>` +
+            `${station.lat.toFixed(7)}, ${station.lng.toFixed(7)}<br>` +
+            `<a href="${mapsUrl}" target="_blank" rel="noopener noreferrer">` +
+            "Abrir en Google Maps ↗</a>"
         );
 
       if (openPopup) {
@@ -795,19 +671,6 @@
 
       return marker;
     }
-
-    stations.forEach((station) => {
-      const map = L.map(`map-${station.id}`, {
-        scrollWheelZoom: false
-      }).setView([station.lat, station.lng], 18);
-
-      L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        tileLayerOptions
-      ).addTo(map);
-
-      addMarker(map, station);
-    });
 
     const overviewMap = L.map("stations-map", {
       scrollWheelZoom: false
