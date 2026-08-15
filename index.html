@@ -6,6 +6,13 @@
   <meta name="description" content="Portal de acceso a estaciones meteorológicas para estudiantes." />
   <title>Estaciones meteorológicas | TaxNature</title>
 
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIINfQ3ynht6eXW+Xvt0d5sA0WPk5y5IprOY="
+    crossorigin=""
+  />
+
   <style>
     :root {
       --white: #ffffff;
@@ -160,11 +167,10 @@
     }
 
     .station-card:hover,
-    .station-card:focus-visible {
+    .station-card:focus-within {
       transform: translateY(-6px);
       border-color: rgba(0, 192, 243, 0.5);
       box-shadow: var(--shadow-hover);
-      outline: none;
     }
 
     .card-accent {
@@ -217,15 +223,73 @@
       line-height: 1.58;
     }
 
+    .station-map {
+      height: 180px;
+      margin-top: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: #eaf7fc;
+      z-index: 0;
+    }
+
+    .station-map .leaflet-control-attribution {
+      font-size: 8px;
+    }
+
+    .station-coordinates {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 13px;
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .station-coordinates small {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .card-actions {
+      display: grid;
+      gap: 9px;
+      margin-top: auto;
+      padding-top: 19px;
+    }
+
     .open-link {
       display: inline-flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-top: auto;
-      padding-top: 22px;
       color: var(--blue);
       font-weight: 900;
+      text-decoration: none;
+    }
+
+    .map-link {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .open-link:focus-visible,
+    .map-link:focus-visible {
+      border-radius: 8px;
+      outline: 3px solid rgba(0, 192, 243, 0.35);
+      outline-offset: 3px;
+    }
+
+    .map-link:hover,
+    .map-link:focus-visible {
+      color: var(--blue);
+      text-decoration: underline;
     }
 
     .arrow {
@@ -239,9 +303,62 @@
       transition: transform 0.2s ease;
     }
 
-    .station-card:hover .arrow,
-    .station-card:focus-visible .arrow {
+    .open-link:hover .arrow,
+    .open-link:focus-visible .arrow {
       transform: translateX(4px);
+    }
+
+    .location-overview {
+      margin-top: 25px;
+      padding: 23px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .location-overview h3 {
+      margin: 0;
+      color: var(--blue);
+      font-size: clamp(20px, 3vw, 26px);
+    }
+
+    .location-overview p {
+      margin: 8px 0 17px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .overview-map {
+      height: 420px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 19px;
+      background: #eaf7fc;
+      z-index: 0;
+    }
+
+    .map-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(21, 50, 74, 0.2);
     }
 
     .help-box {
@@ -363,6 +480,18 @@
         padding: 20px;
       }
 
+      .station-map {
+        height: 210px;
+      }
+
+      .location-overview {
+        padding: 18px;
+      }
+
+      .overview-map {
+        height: 360px;
+      }
+
       footer {
         flex-direction: column;
         text-align: center;
@@ -404,13 +533,7 @@
       </div>
 
       <div class="station-grid">
-        <a
-          class="station-card"
-          href="https://taxnature.shinyapps.io/station_met_davis/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Abrir estación meteorológica Davis"
-        >
+        <article class="station-card">
           <div class="card-accent"></div>
           <div class="card-body">
             <div class="icon-wrap">🌬️</div>
@@ -420,20 +543,43 @@
               Consulte viento, radiación, evapotranspiración, temperatura,
               humedad y precipitación.
             </p>
-            <div class="open-link">
-              <span>Abrir estación</span>
-              <span class="arrow" aria-hidden="true">→</span>
+            <div
+              class="station-map"
+              id="map-davis"
+              role="img"
+              aria-label="Mapa de la ubicación de la estación meteorológica Davis"
+            ></div>
+            <div class="station-coordinates">
+              <span aria-hidden="true">📍</span>
+              <span>
+                10°00'20.03"N, 84°15'58.42"W<br />
+                <small>10.0055639, -84.2662278</small>
+              </span>
+            </div>
+            <div class="card-actions">
+              <a
+                class="open-link"
+                href="https://taxnature.shinyapps.io/station_met_davis/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abrir estación meteorológica Davis"
+              >
+                <span>Abrir estación</span>
+                <span class="arrow" aria-hidden="true">→</span>
+              </a>
+              <a
+                class="map-link"
+                href="https://www.google.com/maps?q=10.0055639,-84.2662278"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver ubicación en Google Maps ↗
+              </a>
             </div>
           </div>
-        </a>
+        </article>
 
-        <a
-          class="station-card"
-          href="https://taxnature.shinyapps.io/station_met_malezas/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Abrir estación meteorológica de malezas"
-        >
+        <article class="station-card">
           <div class="card-accent"></div>
           <div class="card-body">
             <div class="icon-wrap">🌱</div>
@@ -443,20 +589,43 @@
               Explore las lecturas de los nodos de campo, incluyendo temperatura,
               humedad relativa y lluvia.
             </p>
-            <div class="open-link">
-              <span>Abrir estación</span>
-              <span class="arrow" aria-hidden="true">→</span>
+            <div
+              class="station-map"
+              id="map-malezas"
+              role="img"
+              aria-label="Mapa de la ubicación de la estación meteorológica de malezas"
+            ></div>
+            <div class="station-coordinates">
+              <span aria-hidden="true">📍</span>
+              <span>
+                10°00'23.25"N, 84°15'54.77"W<br />
+                <small>10.0064583, -84.2652139</small>
+              </span>
+            </div>
+            <div class="card-actions">
+              <a
+                class="open-link"
+                href="https://taxnature.shinyapps.io/station_met_malezas/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abrir estación meteorológica de malezas"
+              >
+                <span>Abrir estación</span>
+                <span class="arrow" aria-hidden="true">→</span>
+              </a>
+              <a
+                class="map-link"
+                href="https://www.google.com/maps?q=10.0064583,-84.2652139"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver ubicación en Google Maps ↗
+              </a>
             </div>
           </div>
-        </a>
+        </article>
 
-        <a
-          class="station-card"
-          href="https://taxnature.shinyapps.io/station_FBM/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Abrir estación meteorológica IMN FBM"
-        >
+        <article class="station-card">
           <div class="card-accent"></div>
           <div class="card-body">
             <div class="icon-wrap">☀️</div>
@@ -466,13 +635,70 @@
               Consulte temperatura, precipitación, radiación solar, radiación PAR
               y presión atmosférica.
             </p>
-            <div class="open-link">
-              <span>Abrir estación</span>
-              <span class="arrow" aria-hidden="true">→</span>
+            <div
+              class="station-map"
+              id="map-fbm"
+              role="img"
+              aria-label="Mapa de la ubicación de la estación meteorológica IMN Fabio Baudrit Moreno"
+            ></div>
+            <div class="station-coordinates">
+              <span aria-hidden="true">📍</span>
+              <span>
+                10°00'23.06"N, 84°15'54.50"W<br />
+                <small>10.0064056, -84.2651389</small>
+              </span>
+            </div>
+            <div class="card-actions">
+              <a
+                class="open-link"
+                href="https://taxnature.shinyapps.io/station_FBM/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abrir estación meteorológica IMN FBM"
+              >
+                <span>Abrir estación</span>
+                <span class="arrow" aria-hidden="true">→</span>
+              </a>
+              <a
+                class="map-link"
+                href="https://www.google.com/maps?q=10.0064056,-84.2651389"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver ubicación en Google Maps ↗
+              </a>
             </div>
           </div>
-        </a>
+        </article>
       </div>
+
+      <section class="location-overview" aria-labelledby="location-title">
+        <h3 id="location-title">Ubicación de las estaciones</h3>
+        <p>
+          Compare la posición de los tres nodos meteorológicos instalados en la
+          Estación Experimental Agrícola Fabio Baudrit Moreno.
+        </p>
+        <div
+          class="overview-map"
+          id="stations-map"
+          role="img"
+          aria-label="Mapa general con las tres estaciones meteorológicas"
+        ></div>
+        <div class="map-legend" aria-label="Leyenda del mapa">
+          <span class="legend-item">
+            <span class="legend-dot" style="background: #005da4"></span>
+            Davis
+          </span>
+          <span class="legend-item">
+            <span class="legend-dot" style="background: #6dc067"></span>
+            Malezas
+          </span>
+          <span class="legend-item">
+            <span class="legend-dot" style="background: #f2b705"></span>
+            IMN–FBM
+          </span>
+        </div>
+      </section>
 
       <div class="help-box">
         <span aria-hidden="true">💡</span>
@@ -513,5 +739,94 @@
       </div>
     </footer>
   </main>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9coqIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script>
+    const stations = [
+      {
+        id: "davis",
+        name: "Estación meteorológica Davis",
+        lat: 10.0055639,
+        lng: -84.2662278,
+        color: "#005da4"
+      },
+      {
+        id: "malezas",
+        name: "Estación meteorológica de malezas",
+        lat: 10.0064583,
+        lng: -84.2652139,
+        color: "#6dc067"
+      },
+      {
+        id: "fbm",
+        name: "Estación meteorológica IMN–FBM",
+        lat: 10.0064056,
+        lng: -84.2651389,
+        color: "#f2b705"
+      }
+    ];
+
+    const tileLayerOptions = {
+      maxZoom: 20,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    };
+
+    function addMarker(map, station, openPopup = false) {
+      const marker = L.circleMarker([station.lat, station.lng], {
+        radius: 9,
+        color: "#ffffff",
+        weight: 3,
+        fillColor: station.color,
+        fillOpacity: 1
+      })
+        .addTo(map)
+        .bindPopup(
+          `<strong>${station.name}</strong><br>${station.lat.toFixed(7)}, ${station.lng.toFixed(7)}`
+        );
+
+      if (openPopup) {
+        marker.openPopup();
+      }
+
+      return marker;
+    }
+
+    stations.forEach((station) => {
+      const map = L.map(`map-${station.id}`, {
+        scrollWheelZoom: false
+      }).setView([station.lat, station.lng], 18);
+
+      L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        tileLayerOptions
+      ).addTo(map);
+
+      addMarker(map, station);
+    });
+
+    const overviewMap = L.map("stations-map", {
+      scrollWheelZoom: false
+    });
+
+    L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      tileLayerOptions
+    ).addTo(overviewMap);
+
+    stations.forEach((station) => addMarker(overviewMap, station));
+
+    const stationBounds = L.latLngBounds(
+      stations.map((station) => [station.lat, station.lng])
+    );
+
+    overviewMap.fitBounds(stationBounds.pad(0.8), {
+      maxZoom: 18
+    });
+  </script>
 </body>
 </html>
